@@ -1,0 +1,13 @@
+{
+  "name": "Maximize To Empty Workspace",
+  "description": "New and maximized windows will be moved to empty workspaces.\nSupports multiple monitors.\n\nFixed monitor activation bug that caused app minimization.",
+  "url":"https://github.com/MostafaRM7/gnome-shell-extension-maximize-to-empty-workspace",
+  "uuid": "MaximizeToEmptyWorkspace-extension@MostafaRM7.github.io",
+  "shell-version": [
+    "45",
+    "46",
+    "47",
+    "48"
+  ],
+  "version": 15
+}
