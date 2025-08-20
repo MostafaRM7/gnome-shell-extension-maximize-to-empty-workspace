@@ -21,7 +21,7 @@ New and maximized windows will be moved to empty workspaces. Supports multiple m
 2. Restart GNOME Shell (Alt+F2, type 'r', press Enter)
 3. Enable the extension using GNOME Extensions app or via command line:
    ```bash
-   gnome-extensions enable MaximizeToEmptyWorkspace-extension@basalam3922.github.io
+   gnome-extensions enable MaximizeToEmptyWorkspace-extension@MostafaRM7.github.io
    ```
 
 ## Compatibility
@@ -39,8 +39,8 @@ This program is free software: you can redistribute it and/or modify it under th
 
 - **Original Author**: [kaiseracm](https://github.com/kaiseracm/gnome-shell-extension-maximize-to-empty-workspace)
 - **Based on**: [Maximize To Workspace With History](https://github.com/raonetwo/MaximizeToWorkspace) by raonetwo
-- **Maintained by**: basalam3922
-- **Bug Fix Contributors**: basalam3922
+- **Maintained by**: MostafaRM7
+- **Bug Fix Contributors**: MostafaRM7
 
 ## Contributing
 

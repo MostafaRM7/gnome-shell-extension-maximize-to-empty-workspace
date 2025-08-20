@@ -1,6 +1,6 @@
 #!/bin/sh
 
-NAME=MaximizeToEmptyWorkspace-extension@basalam3922.github.io
+NAME=MaximizeToEmptyWorkspace-extension@MostafaRM7.github.io
 cd $NAME
 zip -r $NAME.zip *
 mv $NAME.zip ../..
