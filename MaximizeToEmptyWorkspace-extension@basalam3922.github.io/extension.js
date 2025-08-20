@@ -1,8 +1,13 @@
 /* extension.js
  *
+ * Maximize To Empty Workspace Extension
+ * 
+ * Original work Copyright (C) 2019 kaiseracm
+ * Modified work Copyright (C) 2025 basalam3922
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -13,7 +18,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * SPDX-License-Identifier: GPL-2.0-or-later
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
 import Meta from 'gi://Meta';
 import Gio from 'gi://Gio';
@@ -25,9 +30,25 @@ const _handles = [];
 const _windowids_maximized = {};
 const _windowids_size_change = {};
 
+let _displayConfigChangeInProgress = false;
+let _displayConfigTimer = null;
+
 export default class Extension {
  
     constructor() {
+    }
+
+    markDisplayConfigChange() {
+        _displayConfigChangeInProgress = true;
+        
+        if (_displayConfigTimer) {
+            clearTimeout(_displayConfigTimer);
+        }
+        
+        _displayConfigTimer = setTimeout(() => {
+            _displayConfigChangeInProgress = false;
+            _displayConfigTimer = null;
+        }, 2000);
     }
     
     // First free workspace on the specified monitor
@@ -62,6 +83,11 @@ export default class Extension {
     
     placeOnWorkspace(win) {
         //console.log("achim","placeOnWorkspace:"+win.get_id());
+        
+        if (_displayConfigChangeInProgress) {
+            return;
+        }
+        
         // bMap true - new windows to end of workspaces
         const bMap = false;
 
@@ -159,6 +185,10 @@ export default class Extension {
     backto(win) {
 
         //console.log("achim","backto "+win.get_id());
+        
+        if (_displayConfigChangeInProgress) {
+            return;
+        }
         
         // Idea: don't move the coresponding window to an other workspace (it may be not fully active yet)
         // Reorder the workspaces and move all other window
@@ -323,6 +353,12 @@ export default class Extension {
 
     enable() {
         this._mutterSettings = new Gio.Settings({ schema_id: 'org.gnome.mutter' });
+        
+        // Monitor display configuration changes
+        this._displayHandle = global.display.connect('monitors-changed', () => {
+            this.markDisplayConfigChange();
+        });
+        
         // Trigger new window with maximize size and if the window is maximized
         _handles.push(global.window_manager.connect('minimize', (_, act) => {this.window_manager_minimize(act);}));
         _handles.push(global.window_manager.connect('unminimize', (_, act) => {this.window_manager_unminimize(act);}));
@@ -334,8 +370,19 @@ export default class Extension {
     }
 
     disable() {
-        // remove array and disconect
+        // remove array and disconnect
         _handles.splice(0).forEach(h => global.window_manager.disconnect(h));
+        
+        if (this._displayHandle) {
+            global.display.disconnect(this._displayHandle);
+            this._displayHandle = null;
+        }
+        
+        if (_displayConfigTimer) {
+            clearTimeout(_displayConfigTimer);
+            _displayConfigTimer = null;
+        }
+        _displayConfigChangeInProgress = false;
         
         this._mutterSettings = null;
     }
